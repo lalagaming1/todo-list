@@ -1,6 +1,5 @@
-#Importing GooeyPie module and os module(Operating System)
+#Importing GooeyPie module
 import gooeypie as gp
-import os
 
 #Defining functions
 def add_new_task(event):
@@ -33,35 +32,6 @@ def clear_all(event):
     """Remove all tasks from the done list"""
     done_lst.items = []
 
-def load_tasks():
-    """"Loads tasks from the tasks file and populates the todo and done listboxes"""
-    try:
-        with open("tasks.txt") as tasks_file:
-            tasks = tasks_file.readline()
-        if tasks[0] != "\n":
-            todo_lst.items(tasks[0].strip().split("\t"))
-        if tasks[1] != "\n":
-            done_lst.items(tasks[1].strip().split("\t"))
-    except FileNotFoundError:
-        pass
-    except IndexError:
-        #If the file is not of the correct format, inform the user
-        message = "The tasks file could not be loaded because it is not in the correct format\n\n Are you sure you want to exit?"
-        app.alert("Could not load tasks file", message, "info")
-def save_tasks():
-    """Saves the todo and done lists to the tasks file"""
-    todos = "\t".join(todo_lst.items)
-    dones = "\t".join(done_lst.items)
-    try:
-
-        with open("tasks.txt", "w") as tasks_file:
-            tasks_file.write(f"{todos}\n{dones}\n")
-        
-    except PermissionError:
-        #Inform the user of the error and seek confirmation to exit
-        message = f"Could not save tasks file in {os.getcwd()} due to a permision error"
-        app.confirm_yesno("Cannot save tasks file", message, "warning")
-    return True
 #Initializing GooeyPie
 app = gp.GooeyPieApp('Todo list')
 app.width = 400
@@ -97,10 +67,6 @@ app.add(all_done_btn, 3, 3, fill=True)
 app.add(done_lbl, 4, 1, align='right')
 app.add(done_lst, 4, 2, column_span=2, fill=True, stretch=True)
 app.add(clear_all_btn, 5, 3, fill=True)
-#Load tasks from the tasks file
-app.on_open(load_tasks)
-#Save Tasks
-app.on_close(save_tasks)
 #Focusing on the new task input box to quickly add tasks to the todo list
 new_task_inp.focus()
 #Running the app
